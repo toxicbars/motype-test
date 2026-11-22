@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест «Мо-тайп» (v4.1) — Диагностика трудовой мотивации по В.И. Герчикову</title>
+    <style>
+        :root {
+            --bg-main: #f4f6f9;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent-in: #0ea5e9;
+            --accent-pr: #8b5cf6;
+            --accent-pa: #10b981;
+            --accent-ho: #f59e0b;
+            --accent-lu: #ef4444;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #0f172a;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        /* Progress Bar */
+        .progress-wrapper {
+            margin-bottom: 24px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Questions & Options */
+        .question-meta {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .option-item:hover {
+            border-color: #93c5fd;
+            background: #f8fafc;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .option-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .option-marker {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            transition: all 0.15s ease;
+        }
+
+        .option-marker.radio {
+            border-radius: 50%;
+        }
+
+        .option-item.selected .option-marker {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .option-item.selected .option-marker::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        .option-item.selected .option-marker.radio::after {
+            border-radius: 50%;
+        }
+
+        /* Matrix Table for Q10 */
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .matrix-table th, .matrix-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .matrix-table th:first-child, .matrix-table td:first-child {
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .matrix-table th {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #f8fafc;
+        }
+
+        .matrix-radio {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Form inputs for Demo block */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Results Screen */
+        .chart-row {
+            margin-bottom: 16px;
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .chart-bar-bg {
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.6s ease;
+        }
+
+        .type-card {
+            border-left: 5px solid var(--primary);
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .stim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .stim-item {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stim-status {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .st-base { background: #dcfce7; color: #166534; }
+        .st-app { background: #dbeafe; color: #1e40af; }
+        .st-neut { background: #f1f5f9; color: #475569; }
+        .st-ban { background: #fee2e2; color: #991b1b; }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .card { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .matrix-table th, .matrix-table td { padding: 8px 4px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ЭКРАН 1: ВВОДНЫЙ -->
+    <div id="screen-intro" class="card">
+        <span class="badge">Методика В.И. Герчикова • Версия 4.1</span>
+        <h1>Тест «Мо-тайп» на определение типа трудовой мотивации</h1>
+        <p>Методика предназначена для диагностики мотивационной структуры личности и определения выраженности пяти базовых типов трудовой мотивации: <strong>инструментального, профессионального, патриотического, хозяйского и избегательного</strong>.</p>
+        <p><strong>Инструкция:</strong> Анкета включает 18 вопросов. Внимательно читайте формулировки и обращайте внимание на подсказку о том, сколько вариантов ответа можно выбрать в каждом конкретном вопросе (один, до двух или любое количество). Прохождение займет 5–7 минут.</p>
+        <div style="margin-top: 24px;">
+            <button class="btn" onclick="startTest()">Начать тестирование</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: ТЕСТИРОВАНИЕ -->
+    <div id="screen-quiz" class="card hidden">
+        <div class="progress-wrapper">
+            <div class="progress-info">
+                <span id="progress-step">Вопрос 1 из 15</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="question-container"></div>
+
+        <div class="nav-buttons">
+            <button id="btn-prev" class="btn btn-outline" onclick="prevStep()">← Назад</button>
+            <button id="btn-next" class="btn" onclick="nextStep()">Далее →</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 3: РЕЗУЛЬТАТЫ -->
+    <div id="screen-result" class="hidden">
+        <div class="card">
+            <span class="badge">Результаты диагностики</span>
+            <h1>Ваш мотивационный профиль</h1>
+            <p id="user-summary-meta" style="font-size: 0.9rem; margin-bottom: 24px;"></p>
+
+            <div id="charts-container" style="margin-bottom: 32px;"></div>
+
+            <h2>Ведущий тип мотивации</h2>
+            <div id="dominant-types-container"></div>
+        </div>
+
+        <div class="card">
+            <h2>Рекомендации по управлению и стимулированию</h2>
+            <p>Согласно типологической модели В.И. Герчикова, для ведущего типа мотивации определены наиболее эффективные и противопоказанные формы стимулирования, а также особенности командного взаимодействия.</p>
+            <div id="recommendations-container"></div>
+
+            <div style="margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="btn" onclick="restartTest()">Пройти тест заново</button>
+                <button class="btn btn-outline" onclick="window.print()">Сохранить / Распечатать PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // База вопросов строго по анкете «Мо-тайп» (v4.1)
+    const steps = [
+        {
+            id: 'demo',
+            type: 'demo',
+            title: 'Вопросы 1–4. Общие сведения о респонденте',
+            subtitle: 'Укажите вашу текущую позицию — от этого зависит формулировка финального вопроса анкеты (18.1 для руководителей или 18.2 для специалистов).'
+        },
+        {
+            id: 'q5',
+            num: 5,
+            text: 'Что Вы больше всего цените в своей работе?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Что я в основном сам решаю, что и как мне делать.' },
+                { id: 2, text: 'Что она дает мне возможность проявить то, что я знаю и умею.' },
+                { id: 3, text: 'Что я чувствую себя полезным и нужным.' },
+                { id: 4, text: 'Что мне за нее относительно неплохо платят.' },
+                { id: 5, text: 'Особенно ничего не ценю, но эта работа мне хорошо знакома и привычна.' }
+            ]
+        },
+        {
+            id: 'q6',
+            num: 6,
+            text: 'Какое выражение из перечисленных ниже Вам подходит более всего?',
+            max: 1,
+            options: [
+                { id: 1, text: '«Я могу обеспечить своим трудом себе и своей семье приличный доход».' },
+                { id: 2, text: '«В своей работе я — полный хозяин».' },
+                { id: 3, text: '«У меня достаточно знаний и опыта, чтобы справиться с любыми трудностями в моей работе».' },
+                { id: 4, text: '«Я — ценный, незаменимый для организации работник».' },
+                { id: 5, text: '«Я всегда выполняю то, что от меня требуют».' }
+            ]
+        },
+        {
+            id: 'q7',
+            num: 7,
+            text: 'Как Вы предпочитаете работать?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Предпочитаю делать то, что знакомо, привычно.' },
+                { id: 2, text: 'Нужно, чтобы в работе постоянно появлялось что-то новое, чтобы не стоять на месте.' },
+                { id: 3, text: 'Чтобы было точно известно, что нужно сделать и что я за это получу.' },
+                { id: 4, text: 'Предпочитаю работать под полную личную ответственность.' },
+                { id: 5, text: 'Готов(а) делать все, что нужно для организации.' }
+            ]
+        },
+        {
+            id: 'q8',
+            num: 8,
+            text: 'Допустим, что Вам предлагают другую работу в Вашей организации. При каких условиях Вы бы на это согласились?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Если предложат намного более высокую зарплату.' },
+                { id: 2, text: 'Если другая работа будет более творческой, интересней, чем нынешняя.' },
+                { id: 3, text: 'Если новая работа даст мне больше самостоятельности.' },
+                { id: 4, text: 'Если это очень нужно для организации.' },
+                { id: 6, text: 'При всех случаях я предпочел (предпочла) бы остаться на той работе, к которой привык (привыкла).' }
+            ]
+        },
+        {
+            id: 'q9',
+            num: 9,
+            text: 'Попробуйте определить, что для Вас означает Ваш заработок?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Плата за время и усилия, потраченные на выполнение работы.' },
+                { id: 2, text: 'Это, прежде всего, плата за мои знания, квалификацию.' },
+                { id: 3, text: 'Оплата за мой трудовой вклад в общие результаты деятельности организации.' },
+                { id: 4, text: 'Мне нужен гарантированный заработок — пусть небольшой, но чтобы он был.' },
+                { id: 5, text: 'Какой бы он ни был, я его заработал(а) сам(а).' }
+            ]
+        },
+        {
+            id: 'q10',
+            num: 10,
+            type: 'matrix',
+            text: 'Как Вы относитесь к перечисленным ниже источникам дохода? Оцените каждую строку:',
+            rows: [
+                { id: '10.1', text: '1) Заработная плата и премии; пенсии; стипендии' },
+                { id: '10.2', text: '2) Доплаты за квалификацию' },
+                { id: '10.3', text: '3) Доплаты за тяжелые и вредные условия работы' },
+                { id: '10.4', text: '4) Социальные выплаты и льготы, пособия' },
+                { id: '10.5', text: '5) Доходы от капитала, акций' },
+                { id: '10.6', text: '6) Любые дополнительные приработки' },
+                { id: '10.7', text: '7) Приработки, но не любые, а только по своей специальности' },
+                { id: '10.8', text: '8) Доходы от личного хозяйства, дачного участка и т.п.' },
+                { id: '10.9', text: '9) Выигрыш в лотерею, казино и пр.' }
+            ]
+        },
+        {
+            id: 'q11',
+            num: 11,
+            text: 'На каких принципах, по-Вашему, должны строиться отношения между работником и организацией?',
+            max: 1,
+            options: [
+                { id: 1, text: 'Работник должен относиться к организации, как к своему дому, отдавать ей все и вместе переживать трудности и подъемы. Организация должна соответственно оценивать преданность и труд работника.' },
+                { id: 2, text: 'Работник продает организации свой труд и, если ему не дают хорошую цену, он вправе найти другого покупателя.' },
+                { id: 3, text: 'Работник приходит в организацию для самореализации и относится к ней, как к месту реализации своих способностей. Организация должна обеспечивать работнику такую возможность, извлекать из этого выгоду для себя и на этой основе развиваться.' },
+                { id: 4, text: 'Работник тратит на организацию свои силы, а организация должна взамен гарантировать ему зарплату и социальные блага.' }
+            ]
+        },
+        {
+            id: 'q12',
+            num: 12,
+            text: 'Как Вы считаете, почему в процессе работы люди проявляют инициативу, вносят различные предложения?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Чувствуют особую ответственность за свою работу.' },
+                { id: 2, text: 'Из-за стремления реализовать свои знания и опыт, выйти за установленные работой рамки.' },
+                { id: 3, text: 'Чаще всего из-за желания улучшить работу своей организации.' },
+                { id: 4, text: 'Просто хотят «выделиться» или завоевать расположение начальства.' },
+                { id: 5, text: 'Хотят заработать, поскольку всякая полезная инициатива должна вознаграждаться.' }
+            ]
+        },
+        {
+            id: 'q13',
+            num: 13,
+            text: 'Какое суждение о коллективной работе Вам ближе?',
+            max: 2,
+            options: [
+                { id: 1, text: '«Коллектив для меня очень важен, одному хороших результатов не добиться».' },
+                { id: 2, text: '«Предпочитаю работать автономно, но чувствую себя так же хорошо, когда работаю вместе с интересными людьми».' },
+                { id: 3, text: '«Мне нужна свобода действий, а коллектив чаще всего эту свободу ограничивает».' },
+                { id: 4, text: '«Можно работать и в коллективе, но платить должны по личным результатам».' },
+                { id: 5, text: '«Мне нравится работать в коллективе, так как там я среди своих».' }
+            ]
+        },
+        {
+            id: 'q14',
+            num: 14,
+            text: 'Представьте себе, что у Вас появилась возможность стать совладельцем Вашей организации. Воспользуетесь ли Вы этой возможностью?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Да, так как я смогу участвовать в управлении организацией.' },
+                { id: 2, text: 'Да, потому что это может увеличить мой доход.' },
+                { id: 3, text: 'Да, так как настоящий работник должен быть совладельцем.' },
+                { id: 4, text: 'Вряд ли — на заработке это не скажется, участие в управлении меня не интересует, а работе это помешает.' },
+                { id: 5, text: 'Нет, не нужны мне лишние заботы.' }
+            ]
+        },
+        {
+            id: 'q15',
+            num: 15,
+            text: 'Представьте, пожалуйста, что Вы сейчас ищете работу. Вам предлагают несколько работ. Какую из них Вы выберете?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Наиболее интересную, творческую.' },
+                { id: 2, text: 'Наиболее самостоятельную, независимую.' },
+                { id: 3, text: 'За которую больше платят.' },
+                { id: 4, text: 'Чтобы за не слишком большие деньги не требовалось особенно «надрываться».' },
+                { id: 5, text: 'Не могу представить, что я уйду из нашей организации.' }
+            ]
+        },
+        {
+            id: 'q16',
+            num: 16,
+            text: 'Что Вы, прежде всего, учитываете, когда оцениваете успехи другого работника в Вашей организации?',
+            max: 2,
+            options: [
+                { id: 1, text: 'Его зарплату, доходы, материальное положение.' },
+                { id: 2, text: 'Уровень его профессионализма, квалификации.' },
+                { id: 3, text: 'Насколько хорошо он «устроился».' },
+                { id: 4, text: 'Насколько его уважают в организации.' },
+                { id: 5, text: 'Насколько он самостоятелен, независим.' }
+            ]
+        },
+        {
+            id: 'q17',
+            num: 17,
+            text: 'Если положение в Вашей организации ухудшится, на какие перемены в Вашей работе и положении Вы согласитесь ради того, чтобы остаться на работе?',
+            max: 6,
+            options: [
+                { id: 1, text: 'Освоить новую профессию.' },
+                { id: 2, text: 'Работать неполный рабочий день или перейти на менее квалифицированную работу и меньше получать.' },
+                { id: 3, text: 'Перейти на менее удобный режим работы.' },
+                { id: 4, text: 'Работать более интенсивно.' },
+                { id: 5, text: 'Соглашусь просто терпеть, потому что деваться некуда.' },
+                { id: 7, text: 'Скорее всего я просто уйду из этой организации.' }
+            ]
+        },
+        {
+            id: 'q18',
+            num: 18,
+            type: 'branch18'
+        }
+    ];
+
+    const q18Manager = {
+        label: '18.1',
+        text: 'Если Вы — РУКОВОДИТЕЛЬ, то что Вас привлекает, прежде всего, в этом положении?',
+        max: 2,
+        options: [
+            { id: 1, text: 'Возможность принимать самостоятельные, ответственные решения.' },
+            { id: 2, text: 'Возможность принести наибольшую пользу организации.' },
+            { id: 3, text: 'Высокий уровень оплаты.' },
+            { id: 4, text: 'Возможность организовывать работу других людей.' },
+            { id: 5, text: 'Возможность наилучшим образом применить свои знания и умения.' },
+            { id: 7, text: 'Ничего особенно не привлекает, за положение руководителя не держусь.' }
+        ]
+    };
+
+    const q18NonManager = {
+        label: '18.2',
+        text: 'Если Вы НЕ ЯВЛЯЕТЕСЬ РУКОВОДИТЕЛЕМ, то хотели бы Вы им стать?',
+        max: 2,
+        options: [
+            { id: 1, text: 'Да, поскольку это даст возможность принимать самостоятельные, ответственные решения.' },
+            { id: 2, text: 'Не против, если это нужно для пользы дела.' },
+            { id: 3, text: 'Да, так как при этом я смогу лучше применить свои знания и умения.' },
+            { id: 4, text: 'Да, если это будет должным образом оплачиваться.' },
+            { id: 5, text: 'Нет, профессионал может отвечать только за самого себя.' },
+            { id: 6, text: 'Нет, руководство меня не привлекает, а хорошо заработать я могу и на своем месте.' },
+            { id: 7, text: 'Да, чем я хуже других?' },
+            { id: 8, text: 'Нет, это слишком большая нагрузка для меня.' }
+        ]
+    };
+
+    // Ключ идентификации типов трудовой мотивации из документа
+    const scoringKey = {
+        q5:  { IN: [4], PR: [2], PA: [3], HO: [1], LU: [5] },
+        q6:  { IN: [1], PR: [3], PA: [4], HO: [2], LU: [5] },
+        q7:  { IN: [3], PR: [2], PA: [5], HO: [4], LU: [1] },
+        q8:  { IN: [1], PR: [2], PA: [4], HO: [3], LU: [5, 6] }, // В анкете пункт 6 («остаться на той работе, к которой привык») соответствует ключу 5 (Избегательный)
+        q9:  { IN: [1], PR: [2], PA: [3], HO: [5], LU: [4] },
+        '10.2': { IN: [1], PR: [1], PA: [3], HO: [3], LU: [] },
+        '10.3': { IN: [1], PR: [3], PA: [3], HO: [],  LU: [1] },
+        '10.4': { IN: [],  PR: [3], PA: [],  HO: [],  LU: [1] },
+        '10.5': { IN: [3], PR: [3], PA: [3], HO: [1], LU: [3] },
+        '10.6': { IN: [1], PR: [],  PA: [3], HO: [],  LU: [1] },
+        '10.7': { IN: [1], PR: [1], PA: [],  HO: [3], LU: [3] },
+        '10.8': { IN: [],  PR: [],  PA: [],  HO: [1], LU: [] },
+        '10.9': { IN: [3], PR: [3], PA: [],  HO: [],  LU: [1] },
+        q11: { IN: [2], PR: [3], PA: [1], HO: [1], LU: [4] },
+        q12: { IN: [5], PR: [2], PA: [3], HO: [1], LU: [4] },
+        q13: { IN: [4], PR: [2], PA: [1], HO: [3], LU: [5] },
+        q14: { IN: [2], PR: [4], PA: [1], HO: [3, 1], LU: [5] },
+        q15: { IN: [3], PR: [1], PA: [5], HO: [2], LU: [4] },
+        q16: { IN: [1], PR: [2], PA: [4], HO: [5], LU: [3] },
+        q17: { IN: [4, 7], PR: [1, 4, 7], PA: [1, 2, 4, 5], HO: [1, 2, 4], LU: [2, 5] },
+        q18_1: { IN: [3, 7], PR: [5], PA: [2], HO: [1], LU: [4] },
+        q18_2: { IN: [4, 6], PR: [3, 5], PA: [2], HO: [1, 3], LU: [7, 8] }
+    };
+
+    // Описания и таблицы рекомендаций по типам мотивации
+    const typeProfiles = {
+        IN: {
+            code: 'ИН',
+            name: 'Инструментальный тип мотивации',
+            color: '#0ea5e9',
+            desc: 'Сама работа не является для такого работника значимой ценностью и рассматривается только как источник заработка и других благ, получаемых в качестве вознаграждения за труд. Но его интересуют не любые деньги, а именно заработок; поэтому он будет работать с максимальной отдачей на любой работе, если его труд будет справедливо и высоко (в его понимании) оплачиваться.',
+            leadership: 'Низкие, средние',
+            relations: 'Нейтральные, напряженные (напряженность может вызываться завистью к высоким заработкам такого работника и его вполне оправданной реакцией на такое отношение).',
+            functions: 'Нейтральное',
+            initiative: 'Только при особом стимулировании',
+            discipline: 'Средняя',
+            stimuli: [
+                { name: 'Денежные', status: 'Базовые', cls: 'st-base' },
+                { name: 'Негативные', status: 'Применимы в денежной форме', cls: 'st-app' },
+                { name: 'Натуральные', status: 'Применимы в денежной форме', cls: 'st-app' },
+                { name: 'Карьера, развитие', status: 'Применимы', cls: 'st-app' },
+                { name: 'Организационные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Участие в управлении', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Моральные', status: 'Запрещены', cls: 'st-ban' },
+                { name: 'Патернализм', status: 'Запрещен', cls: 'st-ban' }
+            ]
+        },
+        PR: {
+            code: 'ПР',
+            name: 'Профессиональный тип мотивации',
+            color: '#8b5cf6',
+            desc: 'Работник этого типа ценит в работе ее содержание, возможность проявить себя и доказать (не только окружающим, но и себе), что он может справиться с трудным заданием, которое не каждому по силу. Предпочитает самостоятельность в работе и отличается развитым профессиональным достоинством. К руководителю чаще всего относится с известной долей иронии.',
+            leadership: 'Средние',
+            relations: 'Доброжелательные или нейтральные, реже — напряженные (предъявляет к окружающим такие же высокие требования, как к себе, и раздражается, когда окружающие этим требованиям не соответствуют).',
+            functions: 'Расширение',
+            initiative: 'Высокая',
+            discipline: 'Средняя, со срывами (стремится к высокому качеству, иногда в ущерб срокам)',
+            stimuli: [
+                { name: 'Организационные', status: 'Базовые', cls: 'st-base' },
+                { name: 'Карьера, развитие', status: 'Базовые', cls: 'st-base' },
+                { name: 'Денежные', status: 'Применимы', cls: 'st-app' },
+                { name: 'Моральные', status: 'Применимы', cls: 'st-app' },
+                { name: 'Участие в управлении', status: 'Применимы', cls: 'st-app' },
+                { name: 'Натуральные', status: 'Применимы при целевой договоренности', cls: 'st-app' },
+                { name: 'Негативные', status: 'Запрещены', cls: 'st-ban' },
+                { name: 'Патернализм', status: 'Запрещен', cls: 'st-ban' }
+            ]
+        },
+        PA: {
+            code: 'ПА',
+            name: 'Патриотический тип мотивации',
+            color: '#10b981',
+            desc: 'Работника этого типа интересует участие в реализации общего, очень важного для организации дела. Ему свойственна убежденность в своей нужности для организации, готовность взвалить на себя дополнительную ответственность ради достижения результатов общего дела. Для него принципиально важно общественное признание участия в общих достижениях.',
+            leadership: 'Высокие, средние',
+            relations: 'Хорошие',
+            functions: 'Расширение',
+            initiative: 'Высокая',
+            discipline: 'Высокая',
+            stimuli: [
+                { name: 'Моральные', status: 'Базовые', cls: 'st-base' },
+                { name: 'Патернализм', status: 'Применим', cls: 'st-app' },
+                { name: 'Участие в управлении', status: 'Применимы', cls: 'st-app' },
+                { name: 'Негативные', status: 'Применимы в знаковой форме', cls: 'st-app' },
+                { name: 'Натуральные', status: 'Применимы в знаковой форме', cls: 'st-app' },
+                { name: 'Денежные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Организационные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Карьера, развитие', status: 'Нейтральные', cls: 'st-neut' }
+            ]
+        },
+        HO: {
+            code: 'ХО',
+            name: 'Хозяйский тип мотивации',
+            color: '#f59e0b',
+            desc: 'Выражается в добровольном принятии на себя полной ответственности за выполняемую работу. Работник с преобладанием хозяйской мотивации будет выполнять свою работу с максимальной отдачей, не настаивая на ее особой интересности или высокой оплате, не требуя ни дополнительных указаний, ни постоянного контроля.',
+            leadership: 'Высокие',
+            relations: 'Нейтральные',
+            functions: 'Стремление к системной законченности',
+            initiative: 'Высокая в пределах работы/функции',
+            discipline: 'Средняя',
+            stimuli: [
+                { name: 'Участие в совладении и управлении', status: 'Базовые', cls: 'st-base' },
+                { name: 'Денежные', status: 'Применимы', cls: 'st-app' },
+                { name: 'Организационные', status: 'Применимы', cls: 'st-app' },
+                { name: 'Карьера, развитие', status: 'Применимы', cls: 'st-app' },
+                { name: 'Натуральные', status: 'Применимы при целевой договоренности', cls: 'st-app' },
+                { name: 'Моральные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Негативные', status: 'Запрещены', cls: 'st-ban' },
+                { name: 'Патернализм', status: 'Запрещен', cls: 'st-ban' }
+            ]
+        },
+        LU: {
+            code: 'ЛЮ',
+            name: 'Избегательный (люмпенизированный) тип мотивации',
+            color: '#ef4444',
+            desc: 'Работник этого типа обладает очень слабой мотивацией к эффективной работе. У него низкая квалификация и он не стремится ее повышать; он безответственен и старается избежать любой работы, связанной с личной ответственностью; он сам не проявляет никакой активности и негативно относится к активности других. Его основное стремление — минимизировать свои трудовые усилия на уровне, допустимом со стороны непосредственного руководителя.',
+            leadership: 'Крайне низкие',
+            relations: 'Замечательные',
+            functions: 'Сужение',
+            initiative: 'Отсутствует',
+            discipline: 'Средняя или низкая',
+            stimuli: [
+                { name: 'Негативные', status: 'Базовые', cls: 'st-base' },
+                { name: 'Натуральные', status: 'Базовые', cls: 'st-base' },
+                { name: 'Патернализм', status: 'Базовый', cls: 'st-base' },
+                { name: 'Денежные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Моральные', status: 'Нейтральные', cls: 'st-neut' },
+                { name: 'Организационные', status: 'Запрещены', cls: 'st-ban' },
+                { name: 'Карьера, развитие', status: 'Запрещены', cls: 'st-ban' },
+                { name: 'Участие в управлении', status: 'Запрещены', cls: 'st-ban' }
+            ]
+        }
+    };
+
+    // Состояние приложения
+    let currentStep = 0;
+    let answers = {
+        demo: { position: '1', gender: '1', age: '', tenure: '' },
+        q5: [], q6: [], q7: [], q8: [], q9: [],
+        q10: {},
+        q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [], q18: []
+    };
+
+    function startTest() {
+        document.getElementById('screen-intro').classList.add('hidden');
+        document.getElementById('screen-quiz').classList.remove('hidden');
+        renderStep();
+    }
+
+    function restartTest() {
+        currentStep = 0;
+        answers = {
+            demo: { position: '1', gender: '1', age: '', tenure: '' },
+            q5: [], q6: [], q7: [], q8: [], q9: [],
+            q10: {},
+            q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [], q18: []
+        };
+        document.getElementById('screen-result').classList.add('hidden');
+        document.getElementById('screen-intro').classList.remove('hidden');
+    }
+
+    function renderStep() {
+        const step = steps[currentStep];
+        const container = document.getElementById('question-container');
+
+        // Обновление прогресс-бара
+        const percent = Math.round(((currentStep) / steps.length) * 100);
+        document.getElementById('progress-step').textContent = `Шаг ${currentStep + 1} из ${steps.length}`;
+        document.getElementById('progress-percent').textContent = `${percent}%`;
+        document.getElementById('progress-fill').style.width = `${percent}%`;
+
+        document.getElementById('btn-prev').disabled = currentStep === 0;
+        document.getElementById('btn-next').textContent = currentStep === steps.length - 1 ? 'Завершить и узнать результат' : 'Далее →';
+
+        if (step.type === 'demo') {
+            container.innerHTML = `
+                <h2>${step.title}</h2>
+                <p>${step.subtitle}</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>1. Ваша позиция</label>
+                        <select class="form-control" onchange="updateDemo('position', this.value)">
+                            <option value="1" ${answers.demo.position === '1' ? 'selected' : ''}>1) Менеджер (руководитель)</option>
+                            <option value="2" ${answers.demo.position === '2' ? 'selected' : ''}>2) Служащий (специалист)</option>
+                            <option value="3" ${answers.demo.position === '3' ? 'selected' : ''}>3) Рабочий</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>2. Ваш пол</label>
+                        <select class="form-control" onchange="updateDemo('gender', this.value)">
+                            <option value="1" ${answers.demo.gender === '1' ? 'selected' : ''}>1) Мужской</option>
+                            <option value="2" ${answers.demo.gender === '2' ? 'selected' : ''}>2) Женский</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>3. Ваш возраст (лет)</label>
+                        <input type="number" class="form-control" placeholder="Например: 28" value="${answers.demo.age}" onchange="updateDemo('age', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>4. Стаж в организации</label>
+                        <input type="text" class="form-control" placeholder="Например: 2 года или 6 мес." value="${answers.demo.tenure}" onchange="updateDemo('tenure', this.value)">
+                    </div>
+                </div>
+            `;
+            validateNextButton();
+            return;
+        }
+
+        if (step.type === 'matrix') {
+            let rowsHtml = step.rows.map(row => {
+                const val = answers.q10[row.id] || 0;
+                return `
+                    <tr>
+                        <td>${row.text}</td>
+                        <td><input type="radio" class="matrix-radio" name="${row.id}" ${val === 1 ? 'checked' : ''} onchange="selectMatrix('${row.id}', 1)"></td>
+                        <td><input type="radio" class="matrix-radio" name="${row.id}" ${val === 2 ? 'checked' : ''} onchange="selectMatrix('${row.id}', 2)"></td>
+                        <td><input type="radio" class="matrix-radio" name="${row.id}" ${val === 3 ? 'checked' : ''} onchange="selectMatrix('${row.id}', 3)"></td>
+                    </tr>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <h2>Вопрос ${step.num}. ${step.text}</h2>
+                <div class="question-meta">Отметьте по одному варианту в каждой из 9 строк</div>
+                <div style="overflow-x: auto;">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>Источник дохода</th>
+                                <th>1. Очень важно</th>
+                                <th>2. Не очень важно</th>
+                                <th>3. Совсем не важно</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+            validateNextButton();
+            return;
+        }
+
+        // Обычные вопросы и ветвление 18.1 / 18.2
+        let qData = step;
+        let qLabel = step.num;
+        if (step.type === 'branch18') {
+            qData = answers.demo.position === '1' ? q18Manager : q18NonManager;
+            qLabel = qData.label;
+        }
+
+        const selected = answers[step.id] || [];
+        let limitHint = qData.max === 1 ? 'Выберите только один вариант ответа' :
+                        qData.max === 2 ? 'Выберите один или два варианта ответа' :
+                        'Выберите любое количество подходящих вариантов';
+
+        let optionsHtml = qData.options.map(opt => {
+            const isSelected = selected.includes(opt.id);
+            const isMaxReached = qData.max > 1 && selected.length >= qData.max && !isSelected;
+            return `
+                <div class="option-item ${isSelected ? 'selected' : ''} ${isMaxReached ? 'disabled' : ''}"
+                     onclick="toggleOption('${step.id}', ${opt.id}, ${qData.max})">
+                    <div class="option-marker ${qData.max === 1 ? 'radio' : ''}"></div>
+                    <div>${opt.text}</div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <h2>Вопрос ${qLabel}. ${qData.text}</h2>
+            <div class="question-meta">${limitHint} (выбрано: ${selected.length})</div>
+            <div class="options-list">${optionsHtml}</div>
+        `;
+        validateNextButton();
+    }
+
+    function updateDemo(field, val) {
+        if (field === 'position' && answers.demo.position !== val) {
+            answers.q18 = []; // Сброс 18 вопроса при смене роли руководитель/специалист
+        }
+        answers.demo[field] = val;
+    }
+
+    function toggleOption(qId, optId, max) {
+        let arr = answers[qId];
+        if (max === 1) {
+            answers[qId] = [optId];
+        } else {
+            const idx = arr.indexOf(optId);
+            if (idx > -1) {
+                arr.splice(idx, 1);
+            } else if (arr.length < max) {
+                arr.push(optId);
+            }
+        }
+        renderStep();
+    }
+
+    function selectMatrix(rowId, colVal) {
+        answers.q10[rowId] = colVal;
+        validateNextButton();
+    }
+
+    function validateNextButton() {
+        const step = steps[currentStep];
+        const btn = document.getElementById('btn-next');
+        if (step.type === 'demo') {
+            btn.disabled = false;
+        } else if (step.type === 'matrix') {
+            btn.disabled = Object.keys(answers.q10).length < 9;
+        } else {
+            btn.disabled = answers[step.id].length === 0;
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+            renderStep();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function nextStep() {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            renderStep();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            calculateAndShowResults();
+        }
+    }
+
+    function calculateAndShowResults() {
+        const scores = { IN: 0, PR: 0, PA: 0, HO: 0, LU: 0 };
+
+        // Подсчет баллов по вопросам 5–9 и 11–17
+        ['q5', 'q6', 'q7', 'q8', 'q9', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17'].forEach(qId => {
+            const selected = answers[qId];
+            const key = scoringKey[qId];
+            selected.forEach(opt => {
+                for (let type in scores) {
+                    if (key[type] && key[type].includes(opt)) {
+                        scores[type]++;
+                    }
+                }
+            });
+        });
+
+        // Подсчет по таблице 10 (строки 10.2 - 10.9)
+        for (let rowId in answers.q10) {
+            const col = answers.q10[rowId];
+            const key = scoringKey[rowId];
+            if (key) {
+                for (let type in scores) {
+                    if (key[type] && key[type].includes(col)) {
+                        scores[type]++;
+                    }
+                }
+            }
+        }
+
+        // Подсчет по вопросу 18.1 или 18.2
+        const key18 = answers.demo.position === '1' ? scoringKey.q18_1 : scoringKey.q18_2;
+        answers.q18.forEach(opt => {
+            for (let type in scores) {
+                if (key18[type] && key18[type].includes(opt)) {
+                    scores[type]++;
+                }
+            }
+        });
+
+        renderResults(scores);
+    }
+
+    function renderResults(scores) {
+        document.getElementById('screen-quiz').classList.add('hidden');
+        document.getElementById('screen-result').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Сводка респондента
+        const posMap = { '1': 'Менеджер (руководитель)', '2': 'Служащий (специалист)', '3': 'Рабочий' };
+        let metaParts = [`Позиция: ${posMap[answers.demo.position]}`];
+        if (answers.demo.age) metaParts.push(`Возраст: ${answers.demo.age}`);
+        if (answers.demo.tenure) metaParts.push(`Стаж: ${answers.demo.tenure}`);
+        document.getElementById('user-summary-meta').textContent = metaParts.join(' • ');
+
+        // Сортировка типов по убыванию баллов
+        const sortedTypes = Object.keys(scores)
+            .map(key => ({ key, score: scores[key], profile: typeProfiles[key] }))
+            .sort((a, b) => b.score - a.score);
+
+        const totalPoints = sortedTypes.reduce((sum, item) => sum + item.score, 0) || 1;
+        const maxScore = sortedTypes[0].score;
+
+        // Отрисовка диаграммы
+        document.getElementById('charts-container').innerHTML = sortedTypes.map(item => {
+            const pct = Math.round((item.score / totalPoints) * 100);
+            return `
+                <div class="chart-row">
+                    <div class="chart-label">
+                        <span>${item.profile.name} (${item.profile.code})</span>
+                        <span>${item.score} балл. (${pct}%)</span>
+                    </div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: ${pct}%; background-color: ${item.profile.color};"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Определение ведущих типов (учитываем случай, если два типа набрали одинаковый максимум)
+        const winners = sortedTypes.filter(item => item.score === maxScore);
+
+        document.getElementById('dominant-types-container').innerHTML = winners.map(w => `
+            <div class="type-card" style="border-left-color: ${w.profile.color};">
+                <h3 style="margin-top: 0; color: ${w.profile.color};">${w.profile.name} (${w.profile.code}) — ${w.score} балл.</h3>
+                <p style="color: var(--text-main); margin-bottom: 0;">${w.profile.desc}</p>
+            </div>
+        `).join('');
+
+        // Отрисовка рекомендаций по стимулированию и работе в команде для ведущего типа
+        const mainProfile = winners[0].profile;
+        const stimuliHtml = mainProfile.stimuli.map(s => `
+            <div class="stim-item">
+                <div style="font-weight: 600;">${s.name}</div>
+                <span class="stim-status ${s.cls}">${s.status}</span>
+            </div>
+        `).join('');
+
+        document.getElementById('recommendations-container').innerHTML = `
+            <h3>1. Формы стимулирования (${mainProfile.code})</h3>
+            <div class="stim-grid">${stimuliHtml}</div>
+
+            <h3>2. Особенности работы в команде</h3>
+            <div class="stim-item" style="margin-bottom: 12px;">
+                <p style="margin-bottom: 6px; color: var(--text-main);"><strong>Лидерские данные:</strong> ${mainProfile.leadership}</p>
+                <p style="margin-bottom: 0; color: var(--text-main);"><strong>Отношения с другими работниками:</strong> ${mainProfile.relations}</p>
+            </div>
+
+            <h3>3. Особенности организации труда</h3>
+            <div class="stim-item">
+                <p style="margin-bottom: 6px; color: var(--text-main);"><strong>Функции:</strong> ${mainProfile.functions}</p>
+                <p style="margin-bottom: 6px; color: var(--text-main);"><strong>Инициатива:</strong> ${mainProfile.initiative}</p>
+                <p style="margin-bottom: 0; color: var(--text-main);"><strong>Дисциплина:</strong> ${mainProfile.discipline}</p>
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>
