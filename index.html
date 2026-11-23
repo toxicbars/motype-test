@@ -151,6 +151,39 @@
             transition: width 0.3s ease;
         }
 
+        /* Role Switcher for Q18 */
+        .role-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        .role-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .role-btn.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .role-btn:hover:not(.active) {
+            color: var(--text-main);
+        }
+
         /* Questions & Options */
         .question-meta {
             font-size: 0.9rem;
@@ -369,6 +402,7 @@
         @media (max-width: 640px) {
             .card { padding: 20px; }
             .form-grid { grid-template-columns: 1fr; }
+            .role-switcher { grid-template-columns: 1fr; }
             .matrix-table th, .matrix-table td { padding: 8px 4px; font-size: 0.85rem; }
         }
     </style>
@@ -391,7 +425,7 @@
     <div id="screen-quiz" class="card hidden">
         <div class="progress-wrapper">
             <div class="progress-info">
-                <span id="progress-step">Вопрос 1 из 15</span>
+                <span id="progress-step">Шаг 1 из 15</span>
                 <span id="progress-percent">0%</span>
             </div>
             <div class="progress-bar">
@@ -440,7 +474,7 @@
             id: 'demo',
             type: 'demo',
             title: 'Вопросы 1–4. Общие сведения о респонденте',
-            subtitle: 'Укажите вашу текущую позицию — от этого зависит формулировка финального вопроса анкеты (18.1 для руководителей или 18.2 для специалистов).'
+            subtitle: 'Укажите общие данные о себе. На последнем шаге Вы также сможете выбрать, отвечаете ли как руководитель или как специалист.'
         },
         {
             id: 'q5',
@@ -657,7 +691,7 @@
         q5:  { IN: [4], PR: [2], PA: [3], HO: [1], LU: [5] },
         q6:  { IN: [1], PR: [3], PA: [4], HO: [2], LU: [5] },
         q7:  { IN: [3], PR: [2], PA: [5], HO: [4], LU: [1] },
-        q8:  { IN: [1], PR: [2], PA: [4], HO: [3], LU: [5, 6] }, // В анкете пункт 6 («остаться на той работе, к которой привык») соответствует ключу 5 (Избегательный)
+        q8:  { IN: [1], PR: [2], PA: [4], HO: [3], LU: [5, 6] },
         q9:  { IN: [1], PR: [2], PA: [3], HO: [5], LU: [4] },
         '10.2': { IN: [1], PR: [1], PA: [3], HO: [3], LU: [] },
         '10.3': { IN: [1], PR: [3], PA: [3], HO: [],  LU: [1] },
@@ -793,7 +827,9 @@
         demo: { position: '1', gender: '1', age: '', tenure: '' },
         q5: [], q6: [], q7: [], q8: [], q9: [],
         q10: {},
-        q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [], q18: []
+        q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [],
+        q18Role: 'manager', // 'manager' (18.1) или 'non-manager' (18.2)
+        q18: []
     };
 
     function startTest() {
@@ -808,10 +844,20 @@
             demo: { position: '1', gender: '1', age: '', tenure: '' },
             q5: [], q6: [], q7: [], q8: [], q9: [],
             q10: {},
-            q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [], q18: []
+            q11: [], q12: [], q13: [], q14: [], q15: [], q16: [], q17: [],
+            q18Role: 'manager',
+            q18: []
         };
         document.getElementById('screen-result').classList.add('hidden');
         document.getElementById('screen-intro').classList.remove('hidden');
+    }
+
+    function setQ18Role(role) {
+        if (answers.q18Role !== role) {
+            answers.q18Role = role;
+            answers.q18 = []; // Сбрасываем ответы при смене ветки
+            renderStep();
+        }
     }
 
     function renderStep() {
@@ -895,12 +941,25 @@
             return;
         }
 
-        // Обычные вопросы и ветвление 18.1 / 18.2
+        // Обычные вопросы и ветвление 18.1 / 18.2 с переключателем
         let qData = step;
         let qLabel = step.num;
+        let switcherHtml = '';
+
         if (step.type === 'branch18') {
-            qData = answers.demo.position === '1' ? q18Manager : q18NonManager;
+            const isMgr = answers.q18Role === 'manager';
+            qData = isMgr ? q18Manager : q18NonManager;
             qLabel = qData.label;
+            switcherHtml = `
+                <div class="role-switcher">
+                    <button type="button" class="role-btn ${isMgr ? 'active' : ''}" onclick="setQ18Role('manager')">
+                        Я руководитель (вопрос 18.1)
+                    </button>
+                    <button type="button" class="role-btn ${!isMgr ? 'active' : ''}" onclick="setQ18Role('non-manager')">
+                        Я не руководитель (вопрос 18.2)
+                    </button>
+                </div>
+            `;
         }
 
         const selected = answers[step.id] || [];
@@ -921,6 +980,7 @@
         }).join('');
 
         container.innerHTML = `
+            ${switcherHtml}
             <h2>Вопрос ${qLabel}. ${qData.text}</h2>
             <div class="question-meta">${limitHint} (выбрано: ${selected.length})</div>
             <div class="options-list">${optionsHtml}</div>
@@ -930,7 +990,8 @@
 
     function updateDemo(field, val) {
         if (field === 'position' && answers.demo.position !== val) {
-            answers.q18 = []; // Сброс 18 вопроса при смене роли руководитель/специалист
+            answers.q18Role = val === '1' ? 'manager' : 'non-manager';
+            answers.q18 = [];
         }
         answers.demo[field] = val;
     }
@@ -1014,8 +1075,8 @@
             }
         }
 
-        // Подсчет по вопросу 18.1 или 18.2
-        const key18 = answers.demo.position === '1' ? scoringKey.q18_1 : scoringKey.q18_2;
+        // Подсчет по вопросу 18.1 или 18.2 в зависимости от выбранного переключателя
+        const key18 = answers.q18Role === 'manager' ? scoringKey.q18_1 : scoringKey.q18_2;
         answers.q18.forEach(opt => {
             for (let type in scores) {
                 if (key18[type] && key18[type].includes(opt)) {
@@ -1063,7 +1124,7 @@
             `;
         }).join('');
 
-        // Определение ведущих типов (учитываем случай, если два типа набрали одинаковый максимум)
+        // Определение ведущих типов
         const winners = sortedTypes.filter(item => item.score === maxScore);
 
         document.getElementById('dominant-types-container').innerHTML = winners.map(w => `
@@ -1073,7 +1134,7 @@
             </div>
         `).join('');
 
-        // Отрисовка рекомендаций по стимулированию и работе в команде для ведущего типа
+        // Отрисовка рекомендаций
         const mainProfile = winners[0].profile;
         const stimuliHtml = mainProfile.stimuli.map(s => `
             <div class="stim-item">
